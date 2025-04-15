@@ -1,52 +1,92 @@
-// src/pages/Login.jsx
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../UserContext";
+import { UserContext } from "../UserContext";
+import { API_BASE_URL } from "../api";
+import { jwtDecode } from "jwt-decode"; // Import jwtDecode
 
 const Login = () => {
-  const { login } = useUser();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: "", password: "" });
 
-  const handleLogin = async () => {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    const data = await res.json();
-    if (res.ok) {
-      login(data.token);
-      navigate("/"); // ✅ Redirect to home after login
-    } else {
-      alert(data.message);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await response.json();
+      if (response.ok && data.token) {
+        localStorage.setItem("token", data.token);
+        const decoded = jwtDecode(data.token);
+        setUser({ ...decoded, token: data.token });
+        navigate("/"); // Redirect to homepage after login
+      } else {
+        alert(data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Failed to connect to the server");
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto mt-10 p-4 border rounded">
-      <h2 className="text-xl font-bold mb-4">Admin Login</h2>
-      <input
-        type="text"
-        placeholder="Username"
-        className="border w-full p-2 mb-2"
-        value={form.username}
-        onChange={(e) => setForm({ ...form, username: e.target.value })}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        className="border w-full p-2 mb-2"
-        value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
-      />
-      <button
-        onClick={handleLogin}
-        className="bg-blue-500 text-white w-full p-2 rounded"
-      >
-        Login
-      </button>
+    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-md sm:mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-300 to-purple-400 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+          <h1 className="text-2xl font-semibold text-gray-700 text-center">
+            Admin Login
+          </h1>
+          <form onSubmit={handleSubmit} className="mt-6">
+            <div>
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="username"
+              >
+                Username:
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="username"
+                type="text"
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
+            <div className="mt-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="password"
+              >
+                Password:
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="password"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div className="mt-6">
+              <button
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full"
+                type="submit"
+              >
+                Log In
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

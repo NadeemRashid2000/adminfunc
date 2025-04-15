@@ -1,16 +1,17 @@
-// src/UserContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode"; // ✅ Fix here
+import { jwtDecode } from "jwt-decode";
 
-const UserContext = createContext();
+// Create the context
+export const UserContext = createContext();
 
+// Context Provider component
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // { userId, role }
+  const [user, setUser] = useState(null); // user: { userId, role, etc. }
 
   const login = (token) => {
     localStorage.setItem("token", token);
-    const decoded = jwtDecode(token); // ✅ updated function name
-    setUser(decoded);
+    const decoded = jwtDecode(token);
+    setUser({ ...decoded, token });
   };
 
   const logout = () => {
@@ -22,10 +23,11 @@ export const UserProvider = ({ children }) => {
     const token = localStorage.getItem("token");
     if (token) {
       try {
-        const decoded = jwtDecode(token); // ✅ updated function name
-        setUser(decoded);
+        const decoded = jwtDecode(token);
+        setUser({ ...decoded, token });
       } catch (err) {
         console.error("Invalid token");
+        localStorage.removeItem("token");
       }
     }
   }, []);
@@ -37,14 +39,8 @@ export const UserProvider = ({ children }) => {
   );
 };
 
+// Custom hook for easier access
 export const useUser = () => useContext(UserContext);
-
-
-
-
-
-
-
 
 
 
