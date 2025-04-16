@@ -3,18 +3,14 @@ import { Link } from "react-router-dom";
 import { UserContext } from "../UserContext.jsx";
 
 const BlogCard = ({ blog, onDelete }) => {
+  // Receive onDelete
   const { user } = useContext(UserContext);
-
-  const handleDeleteBlog = async (slug) => {
-    // Find the blog in the parent component and call its handleDelete
-    onDelete(slug);
-  };
 
   return (
     <div className="border p-4 rounded-lg shadow-lg bg-white flex justify-between items-center gap-4">
       <div className="flex-1">
         <h2 className="text-xl font-bold text-blue-600">
-          <Link to={`/blog/${blog.slug}`} className="hover:underline">
+          <Link to={`/blogs/slug/${blog.slug}`} className="hover:underline">
             {blog.title}
           </Link>
         </h2>
@@ -32,7 +28,7 @@ const BlogCard = ({ blog, onDelete }) => {
       </div>
       {user && user.role === "admin" && (
         <button
-          onClick={() => handleDeleteBlog(blog.slug)}
+          onClick={() => onDelete(blog.slug)} // Call onDelete
           className="px-4 py-2 border border-red-500 rounded text-red-500 hover:bg-red-500 hover:text-white transition font-semibold"
         >
           Delete

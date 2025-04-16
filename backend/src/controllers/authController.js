@@ -21,12 +21,7 @@ export const login = async (req, res) => {
         .json({ message: "Invalid credentials - Password mismatch" });
     }
 
-    // Generate JWT token (this part was missing in the active code)
-    // const token = jwt.sign(
-    //   { userId: user._id, role: user.role },
-    //   process.env.JWT_SECRET,
-    //   { expiresIn: "1h" } // Token expiration time
-    // );
+  
 
     const token = jwt.sign(
       { _id: user._id, role: user.role },

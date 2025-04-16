@@ -41,7 +41,7 @@ export const createBlog = async (req, res) => {
       description,
       category: categoryToSave,
       content: mdxContent,
-      user: req.user.userId, // ✅ Associate blog with user
+      user: req.user._id, // ✅ Associate blog with user
     });
 
     res

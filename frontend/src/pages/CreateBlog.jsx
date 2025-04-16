@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUser } from "../UserContext";
-import { API_BASE_URL } from "../api";
+import { useUser } from "../UserContext.jsx";
+import { API_BASE_URL } from "../api.js";
+import axios from "axios";
 
 const CreateBlog = () => {
-  const [form, setForm] = useState({
-    title: "",
-    slug: "",
-    description: "",
-    category: "",
-    content: "",
-  });
-
-  const categories = ["Operating System", "DSA", "Web Development", "Tech"];
-  const navigate = useNavigate();
   const { user } = useUser();
+  const navigate = useNavigate();
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("Tech");
+  const [content, setContent] = useState("");
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const categories = ["Tech", "Web Development", "Design", "Lifestyle"];
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -22,62 +22,71 @@ const CreateBlog = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-    // Format slug safely
-    const formattedSlug = form.slug
+    const formattedSlug = slug
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
 
-    // Build frontmatter
-    const frontmatter =
-      `---\n` +
-      `title: ${form.title}\n` +
-      `slug: ${formattedSlug}\n` +
-      `description: ${form.description}\n` +
-      `category: ${form.category || "Others"}\n` +
-      `---\n\n`;
+    const markdownContent = `---
+title: ${title}
+slug: ${formattedSlug}
+description: ${description}
+category: ${category || "Tech"}
+---
 
-    // Final markdown content to send
-    const markdownContent = frontmatter + form.content;
-    console.log("📝 Form data before submit:", form);
+${content}`;
+
+    console.log("📝 Form data before submit:", {
+      title,
+      slug,
+      description,
+      category,
+      content,
+    });
     console.log("🔗 Formatted slug:", formattedSlug);
     console.log("📄 Final MDX content to send:\n", markdownContent);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/blogs`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user?.token}`,
-        },
-        body: JSON.stringify({
-          content: markdownContent,
-          title: form.title,
+      const response = await axios.post(
+        `${API_BASE_URL}/blogs`,
+        {
+          title,
           slug: formattedSlug,
-          description: form.description,
-          category: form.category || "Others",
-        }),
-      });
+          description,
+          category,
+          content: markdownContent,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
 
-      if (response.ok) {
+      if (response.status >= 200 && response.status < 300) {
         alert("Blog created successfully!");
         navigate("/");
-        setForm({
-          title: "",
-          slug: "",
-          description: "",
-          category: "",
-          content: "",
-        });
+        setTitle("");
+        setSlug("");
+        setDescription("");
+        setCategory("Tech");
+        setContent("");
       } else {
-        const errorData = await response.json();
-        alert(`Failed to create blog: ${errorData.message || "Unknown error"}`);
+        const errorData = response.data || { message: "Unknown server error" };
+        throw new Error(
+          `Server error: ${response.status} - ${JSON.stringify(errorData)}`
+        );
       }
     } catch (error) {
-      console.error(" Error creating blog:", error);
-      alert("Failed to connect to the server to create blog.");
+      console.error("Error creating blog:", error);
+      setError(`Failed to create blog: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,8 +99,8 @@ const CreateBlog = () => {
           name="title"
           placeholder="Title"
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onChange={handleChange}
-          value={form.title}
+          onChange={(e) => setTitle(e.target.value)}
+          value={title}
           required
         />
         <input
@@ -99,8 +108,8 @@ const CreateBlog = () => {
           name="slug"
           placeholder="Slug (URL-friendly name)"
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onChange={handleChange}
-          value={form.slug}
+          onChange={(e) => setSlug(e.target.value)}
+          value={slug}
           required
         />
         <input
@@ -108,15 +117,15 @@ const CreateBlog = () => {
           name="description"
           placeholder="Short description"
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onChange={handleChange}
-          value={form.description}
+          onChange={(e) => setDescription(e.target.value)}
+          value={description}
           required
         />
         <select
           name="category"
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          onChange={handleChange}
-          value={form.category}
+          onChange={(e) => setCategory(e.target.value)}
+          value={category}
           required
         >
           <option value="" disabled>
@@ -133,15 +142,17 @@ const CreateBlog = () => {
           placeholder="Write your blog content here (in Markdown/MDX)"
           className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows="8"
-          onChange={handleChange}
-          value={form.content}
+          onChange={(e) => setContent(e.target.value)}
+          value={content}
           required
         ></textarea>
+        {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          disabled={loading}
         >
-          Create Blog
+          {loading ? "Creating..." : "Create Blog"}
         </button>
       </form>
     </div>
@@ -149,6 +160,3 @@ const CreateBlog = () => {
 };
 
 export default CreateBlog;
-
-
-
