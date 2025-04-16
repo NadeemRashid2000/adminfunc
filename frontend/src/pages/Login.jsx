@@ -1,13 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../UserContext";
+import { useUser } from "../UserContext"; // Import the custom hook
 import { API_BASE_URL } from "../api";
-import { jwtDecode } from "jwt-decode"; // Import jwtDecode
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useContext(UserContext);
+  const { login } = useUser(); // Use the custom hook to get the login function
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -22,9 +21,7 @@ const Login = () => {
       });
       const data = await response.json();
       if (response.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        const decoded = jwtDecode(data.token);
-        setUser({ ...decoded, token: data.token });
+        login(data.token); // Use the login function from the context
         navigate("/"); // Redirect to homepage after login
       } else {
         alert(data.message || "Login failed");
