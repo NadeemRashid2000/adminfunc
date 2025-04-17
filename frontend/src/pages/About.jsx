@@ -1,10 +1,11 @@
+
 import React from "react";
 
 const About = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gray-100">
       {/* Header Image */}
-      <img 
+      <img
         src="https://images.pexels.com/photos/262508/pexels-photo-262508.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
         alt="Blog Banner"
         className="w-280 max-h-128 object-cover rounded-lg shadow-lg mb-6"

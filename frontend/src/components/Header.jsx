@@ -13,11 +13,12 @@ const Header = () => {
 
   return (
     <header className="bg-purple-500 text-white py-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-xl font-bold">
+      {/* <div className="container mx-auto flex justify-between items-center"> */}
+      <div className="w-full px-4 flex justify-between items-center">
+        <Link to="/" className="text-3xl font-bold">
           My Blog
         </Link>
-        <nav>
+        <nav className="flex items-center">
           <Link to="/about" className="mr-4">
             About
           </Link>

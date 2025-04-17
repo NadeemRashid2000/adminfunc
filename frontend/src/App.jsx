@@ -5,8 +5,10 @@ import Login from "./pages/Login";
 import CreateBlog from "./pages/CreateBlog";
 import BlogDetails from "./pages/BlogDetails";
 import Header from "./components/Header";
+import Footer from "./components/Footer"; // Import Footer
+import About from "./pages/About"; // Import About
 import { UserProvider } from "./UserContext";
-import CategoryBlogs from "./pages/CategoryBlogs"; // Import the new component
+import CategoryBlogs from "./pages/CategoryBlogs";
 
 function App() {
   return (
@@ -23,10 +25,12 @@ function App() {
               <Route
                 path="/category/:categoryName"
                 element={<CategoryBlogs />}
-              />{" "}
-              {/* Use the new component here */}
+              />
+              <Route path="/about" element={<About />} />{" "}
+              {/* Add About Route */}
             </Routes>
           </main>
+          <Footer /> {/* Include Footer */}
         </div>
       </Router>
     </UserProvider>

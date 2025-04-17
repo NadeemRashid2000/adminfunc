@@ -14,7 +14,7 @@ const CreateBlog = () => {
   const [content, setContent] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const categories = ["Tech", "Web Development", "Design", "Lifestyle"];
+  const categories = ["Tech", "Web Development", "OperatingSystem", "DSA"];
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
