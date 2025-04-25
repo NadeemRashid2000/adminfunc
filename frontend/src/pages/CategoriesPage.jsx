@@ -1,6 +1,6 @@
 import React from "react";
 
-const categories = ["OS",  "DSA", "Web development", "Tech"];
+const categories = ["Others", "OS",  "DSA", "Web development", "Tech"];
 
 const CategoriesPage = () => {
   return (

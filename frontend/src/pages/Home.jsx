@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import BlogCard from "../components/BlogCard";
 import { API_BASE_URL } from "../api.js";
 import { UserContext } from "../UserContext.jsx";
-import axios from "axios"; // Import axios
+import axios from "axios"; 
 
 const Home = () => {
   const { user } = useContext(UserContext);
@@ -92,8 +92,8 @@ const Home = () => {
         )}
       </section>
 
-      <div className="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-8">
-        <div className="md:w-1/3 bg-white shadow-md p-4 rounded-lg">
+      <div className="max-w-6xl mx-auto p-6 flex flex-col md:flex-row gap-8 items-start">
+        <div className="md:w-1/3 bg-white shadow-md p-4 rounded-lg ">
           <h2 className="text-2xl font-bold text-blue-600 mb-4">Categories</h2>
 
           {isLoadingCategories ? (

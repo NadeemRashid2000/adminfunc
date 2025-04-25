@@ -10,11 +10,11 @@ const CreateBlog = () => {
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("Tech");
+  const [category, setCategory] = useState("Others");
   const [content, setContent] = useState("");
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const categories = ["Tech", "Web Development", "OperatingSystem", "DSA"];
+  const categories = ["Others", "OS", "DSA", "Web Development", "Tech"];
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,7 +35,7 @@ const CreateBlog = () => {
 title: ${title}
 slug: ${formattedSlug}
 description: ${description}
-category: ${category || "Tech"}
+category: ${category || "Others"}
 ---
 
 ${content}`;

@@ -1,9 +1,5 @@
-import { createRequire } from "module";
-const require = createRequire(import.meta.url);
-const grayMatter = require("gray-matter");
-
+import grayMatter from "gray-matter";
 import Blog from "../models/Blog.js";
-
 
 /** Create a new blog */
 export const createBlog = async (req, res) => {
@@ -41,7 +37,7 @@ export const createBlog = async (req, res) => {
       description,
       category: categoryToSave,
       content: mdxContent,
-      user: req.user._id, // ✅ Associate blog with user
+      user: req.user._id, //  Associate blog with user
     });
 
     res
@@ -125,11 +121,19 @@ export const getBlogsByCategory = async (req, res) => {
   }
 };
 
-/** Get unique categories */
 export const getCategories = async (req, res) => {
   try {
     let categories = await Blog.distinct("category");
-    if (!categories.includes("Others")) categories.push("Others");
+
+    // Check if there are any blogs without category or with "Others"
+    const othersExist = await Blog.exists({
+      $or: [{ category: { $exists: false } }, { category: "Others" }],
+    });
+
+    if (othersExist && !categories.includes("Others")) {
+      categories.push("Others");
+    }
+
     res.json(categories);
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -147,7 +151,7 @@ export const deleteBlog = async (req, res) => {
       return res.status(404).json({ message: "Blog not found" });
     }
 
-    // Only allow deletion by blog author or admin
+    // Only allow admin deletion
     if (
       blog.user?.toString() !== req.user._id.toString() && // Use req.user._id
       req.user.role !== "admin"

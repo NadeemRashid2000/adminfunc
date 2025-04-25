@@ -58,7 +58,8 @@ const CategoryBlogs = () => {
 
       // Update the frontend state
       setBlogs((prevBlogs) => prevBlogs.filter((blog) => blog.slug !== slug));
-      console.log(`Blog with slug ${slug} deleted from frontend state`);
+      // console.log(`Blog with slug ${slug} deleted from frontend state`);
+      console.log(`Blog with slug ${slug} deleted and frontend is updated`);
     } catch (error) {
       console.error("Error deleting blog:", error);
       setError("Failed to delete blog."); // set the error message.

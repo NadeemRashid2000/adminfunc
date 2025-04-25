@@ -6,7 +6,7 @@ export const UserContext = createContext();
 
 // Context Provider component
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // user: { userId, role, etc. }
+  const [user, setUser] = useState(null); 
 
   const login = (token) => {
     localStorage.setItem("token", token);
