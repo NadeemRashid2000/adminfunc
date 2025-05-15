@@ -1,4 +1,12 @@
+
+
 @import "tailwindcss";
+
+/* Apply the Roboto font globally and other body styles */
+body {
+  @apply font-sans text-gray-900 leading-relaxed tracking-normal;
+  font-family: 'Roboto', sans-serif; /* Use the new Roboto font */
+}
 
 /* Table Styling */
 table {
@@ -26,8 +34,3 @@ h3 { @apply text-2xl font-medium text-blue-400; }
 h4 { @apply text-xl font-medium text-blue-300; }
 h5 { @apply text-lg font-medium text-blue-200; }
 h6 { @apply text-base font-medium text-blue-100; }
-
-/* Body Styling */
-body {
-  @apply font-sans text-gray-900 leading-relaxed tracking-normal;
-}

@@ -3,7 +3,7 @@
 
 export const API_BASE_URL = "http://localhost:5000/api";
 
-console.log(" API_BASE_URL in use:", API_BASE_URL);  // 🔍 Debug log
+console.log(" API_BASE_URL in use:", API_BASE_URL);  //  Debug log
 
 //  Fetch all blogs
 export const fetchBlogs = async () => {

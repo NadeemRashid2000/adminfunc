@@ -18,8 +18,6 @@ const blogSchema = new mongoose.Schema(
 
 export default mongoose.model("Blog", blogSchema);
 
-
-
 // // ! Number 2: Setup the Blog Schema
 // // ! Define the blog structure like title, slug, description in mdb
 
